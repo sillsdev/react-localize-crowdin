@@ -1,0 +1,30 @@
+{
+  "name": "react-localize-crowdin",
+  "version": "1.0.0",
+  "description": "CLI tools to support localizing react apps with Crowdin",
+  "main": "index.js",
+  "dependencies": {
+    "js2xmlparser": "^4.0.0",
+    "xml-js": "^1.6.11"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jasonleenaylor/react-localize-crowdin.git"
+  },
+  "keywords": [
+    "react",
+    "crowdin",
+    "l10n",
+    "i18n"
+  ],
+  "author": "Jason Naylor",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jasonleenaylor/react-localize-crowdin/issues"
+  },
+  "homepage": "https://github.com/jasonleenaylor/react-localize-crowdin#readme"
+}
