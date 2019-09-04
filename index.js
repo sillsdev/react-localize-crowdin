@@ -1,46 +1,60 @@
+#! /usr/bin/env node
+
 var fs = require("fs");
-let convert = require("xml-js");
+let xmlJsConvert = require("xml-js");
+let rlr = require("./r-l-r_json");
 
 var myArgs = process.argv.slice(2);
+if (myArgs.length < 2) {
+  console.log("Command line utilities for working with Crowdin and react");
+  console.log("Usage: -rlr [json translation file] [xlif file]");
+  console.log("\tConverts json to xlf file for Crowdin");
+  console.log("Usage: -x [xlf] [xlf]... -rlr [json translation file]");
+  console.log("\tConverts multiple xlf files from Crowdin int one json file");
+}
 console.log("myArgs: ", myArgs);
 
 let fileName = myArgs[0];
-let data = JSON.parse(fs.readFileSync(fileName));
-let xliffData = {
-  xliff: {
-    _attributes: {
-      xmlns: "urn:oasis:names:tc:xliff:document:1.2",
-      version: "1.2"
-    },
-    file: {
-      _attributes: {
-        original: fileName,
-        "source-language": "en"
-      },
-      "trans-unit": []
+switch (myArgs[0]) {
+  case "-rlr":
+    rlrToXlf(myArgs[1], myArgs[2]);
+    break;
+  case "-x":
+    switch (myArgs[myArgs.length - 2]) {
+      case "-rlr":
+        xlfToRlr(myArgs.slice(1, myArgs.length - 2), myArgs[myArgs.length - 1]);
+        break;
     }
-  }
-};
-Object.keys(data).map(function(key, index) {
-  Object.keys(data[key]).map(function(subkey, subndx) {
-    let transUnit = {
-      _attributes: { id: key + "." + subkey },
-      source: {
-        _attributes: { "xml:lang": "en" },
-        _text: data[key][subkey][0]
-      }
-    };
+}
 
-    xliffData.xliff.file["trans-unit"].push(transUnit);
+function xlfToRlr(xlfFiles, rlrFile) {
+  var options = { compact: true, ignoreComment: true, spaces: 4 };
+  let rlrJson = {};
+  xlfFiles.map(xlf => {
+    let fileJson = JSON.parse(
+      xmlJsConvert.xml2json(fs.readFileSync(xlf), options)
+    );
+    rlr.convertToJson(fileJson, rlrJson);
   });
-});
-var options = { compact: true, ignoreComment: true, spaces: 4 };
-var result = convert.json2xml(xliffData, options);
-console.log(result);
-fs.writeFileSync("test.xml", result, err => {
-  // throws an error, you could also catch it here
-  if (err) throw err;
+  fs.writeFileSync(rlrFile, JSON.stringify(rlrJson), err => {
+    // throws an error, you could also catch it here
+    if (err) throw err;
 
-  // success case, the file was saved
-  console.log("file saved!");
-});
+    // success case, the file was saved
+    console.log("file saved!");
+  });
+}
+
+function rlrToXlf(rlrJsonFile, xlfFile) {
+  let data = JSON.parse(fs.readFileSync(rlrJsonFile));
+  let xliffData = rlr.convertToXliff(data, rlrJsonFile);
+  var options = { compact: true, ignoreComment: true, spaces: 4 };
+  var result = xmlJsConvert.json2xml(xliffData, options);
+  fs.writeFileSync(xlfFile, result, err => {
+    // throws an error, you could also catch it here
+    if (err) throw err;
+
+    // success case, the file was saved
+    console.log("file saved!");
+  });
+}

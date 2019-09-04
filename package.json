@@ -5,11 +5,15 @@
   "main": "index.js",
   "dependencies": {
     "js2xmlparser": "^4.0.0",
+    "mocha": "^6.2.0",
     "xml-js": "^1.6.11"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "test"
+    "test": "mocha **/*.spec.js"
+  },
+  "bin": {
+    "rlr-crowdin": "./index.js"
   },
   "repository": {
     "type": "git",
