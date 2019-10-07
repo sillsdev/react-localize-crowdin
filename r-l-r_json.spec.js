@@ -4,6 +4,11 @@ describe("react-localize-redux to xlf tests", function() {
   let testJson = {
     localize: {
       something: ["tosomething"]
+    },
+    nested: {
+      localize: {
+        something: ["tosomething"]
+      }
     }
   };
   let testXlf = {
@@ -24,14 +29,24 @@ describe("react-localize-redux to xlf tests", function() {
               _attributes: { "xml:lang": "es" },
               _text: "palabrasenespanol"
             }
+          },
+          {
+            _attributes: {
+              id: "nested.localize.something"
+            },
+            source: { _attributes: { "xml:lang": "en", _text: "tosomething" } },
+            target: {
+              _attributes: { "xml:lang": "es" },
+              _text: "palabrasenespanol"
+            }
           }
         ]
       }
     }
   };
   describe("r-l-r_json.convertToXliff", function() {
+    var xlifJson = rlr.convertToXliff(testJson, "test.json");
     it("should have source filename and source language", function() {
-      var xlifJson = rlr.convertToXliff(testJson, "test.json");
       assert.equal(
         xlifJson["xliff"]["file"]["_attributes"]["original"],
         "test.json"
@@ -42,7 +57,6 @@ describe("react-localize-redux to xlf tests", function() {
       );
     });
     it("should have xliff translation id with sub object", function() {
-      var xlifJson = rlr.convertToXliff(testJson, "test.json");
       assert.notEqual(
         xlifJson["xliff"]["file"]["trans-unit"].find(
           item => item["_attributes"].id === "localize.something"
@@ -54,6 +68,13 @@ describe("react-localize-redux to xlf tests", function() {
         "tosomething"
       );
     });
+    it("should have xliff translation id with nested sub object", function() {
+      let foundNested = xlifJson["xliff"]["file"]["trans-unit"].find(
+        item => item["_attributes"].id === "nested.localize.something"
+      );
+      assert.notEqual(foundNested, undefined);
+      assert.equal(foundNested.source._text, "tosomething");
+    });
   });
   describe("xlf json to r-l-r tests", function() {
     it("builds r-l-r heirarchy from flat xliff ids", function() {
@@ -61,9 +82,40 @@ describe("react-localize-redux to xlf tests", function() {
       assert.equal(rlrJson["localize"]["something"][0], "palabrasenespanol");
     });
     it("adds to existing translations", function() {
-      var rlrJson = rlr.convertToJson(testXlf, {localize:{something: ["firsttrans"]}});
+      var rlrJson = rlr.convertToJson(testXlf, {
+        localize: { something: ["firsttrans"] }
+      });
       assert.equal(rlrJson["localize"]["something"][0], "firsttrans");
       assert.equal(rlrJson["localize"]["something"][1], "palabrasenespanol");
+    });
+    it("adds to existing nestedtranslations", function() {
+      var rlrJson = rlr.convertToJson(testXlf, {
+        nested: {
+          localize: {
+            something: ["firsttrans"]
+          }
+        }
+      });
+      assert.equal(rlrJson["nested"]["localize"]["something"][0], "firsttrans");
+      assert.equal(
+        rlrJson["nested"]["localize"]["something"][1],
+        "palabrasenespanol"
+      );
+    });
+  });
+  describe("error handling tests", function() {
+    let testJson = {
+      localize: {
+        something: 5
+      },
+      nested: {
+        localize: {
+          something: ["tosomething"]
+        }
+      }
+    };
+    it("receive error on bad data", function() {
+      assert.throws(() => rlr.convertToXliff(testJson, "test.json"), Error);
     });
   });
 });

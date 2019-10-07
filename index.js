@@ -12,7 +12,6 @@ if (myArgs.length < 2) {
   console.log("Usage: -x [xlf] [xlf]... -rlr [json translation file]");
   console.log("\tConverts multiple xlf files from Crowdin int one json file");
 }
-console.log("myArgs: ", myArgs);
 
 let fileName = myArgs[0];
 switch (myArgs[0]) {
