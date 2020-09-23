@@ -1,5 +1,5 @@
 exports.convertToXliff = function (rlr, fileName) {
-  let xliffData = {
+  const xliffData = {
     xliff: {
       _attributes: {
         xmlns: "urn:oasis:names:tc:xliff:document:1.2",
@@ -22,7 +22,7 @@ exports.convertToXliff = function (rlr, fileName) {
 function flattenXliffTransUnits(rlrData, keyPrefix, xliffData) {
   Object.keys(rlrData).map(function (key) {
     if (Array.isArray(rlrData[key])) {
-      let transUnit = {
+      const transUnit = {
         _attributes: { id: keyPrefix + "." + key },
         source: {
           _attributes: { "xml:lang": "en" },
@@ -51,8 +51,12 @@ exports.convertToJson = function (xlf, rlrJson) {
   return rlrJson;
 };
 
+function getTransUnitIds(tu) {
+  return tu._attributes.id.split(".");
+}
+
 function addTranslationUnit(tu, rlrJson) {
-  const idParts = getTransUnitId(tu);
+  const idParts = getTransUnitIds(tu);
   let section = rlrJson;
   let sectionId = "";
   for (let i = 0; i < idParts.length - 1; i++) {
@@ -65,14 +69,12 @@ function addTranslationUnit(tu, rlrJson) {
   parseTransUnit(tu, section);
 }
 
-function getTransUnitId(tu) {
-  return tu._attributes.id.split(".");
-}
-
 function parseTransUnit(tu, section) {
-  const idParts = tu._attributes.id.split(".");
+  const idParts = getTransUnitIds(tu);
   const finalPart = idParts[idParts.length - 1];
-  if (section[finalPart] === undefined) section[finalPart] = [];
+  if (section[finalPart] === undefined) {
+    section[finalPart] = [];
+  }
   let translation = "";
   if (tu.target !== undefined) {
     translation = tu.target._text;

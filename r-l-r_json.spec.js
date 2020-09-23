@@ -1,8 +1,8 @@
-let rlr = require("./r-l-r_json");
-var assert = require("assert");
+const assert = require("assert");
+const rlr = require("./r-l-r_json");
 
 describe("react-localize-redux to xlf tests", function () {
-  let testJson = {
+  const testJson = {
     localize: {
       something: ["tosomething"],
     },
@@ -12,7 +12,7 @@ describe("react-localize-redux to xlf tests", function () {
       },
     },
   };
-  let testXlf = {
+  const testXlf = {
     xliff: {
       _attributes: {
         xmlns: "urn:oasis:names:tc:xliff:document:1.2",
@@ -47,7 +47,7 @@ describe("react-localize-redux to xlf tests", function () {
   };
 
   describe("r-l-r_json.convertToXliff", function () {
-    var xlifJson = rlr.convertToXliff(testJson, "test.json");
+    const xlifJson = rlr.convertToXliff(testJson, "test.json");
     it("should have source filename and source language", function () {
       assert.strictEqual(
         xlifJson["xliff"]["file"]["_attributes"]["original"],
@@ -71,7 +71,7 @@ describe("react-localize-redux to xlf tests", function () {
       );
     });
     it("should have xliff translation id with nested sub object", function () {
-      let foundNested = xlifJson["xliff"]["file"]["trans-unit"].find(
+      const foundNested = xlifJson["xliff"]["file"]["trans-unit"].find(
         (item) => item["_attributes"].id === "nested.localize.something"
       );
       assert.notStrictEqual(foundNested, undefined);
@@ -81,14 +81,14 @@ describe("react-localize-redux to xlf tests", function () {
 
   describe("xlf json to r-l-r tests", function () {
     it("builds r-l-r heirarchy from flat xliff ids", function () {
-      var rlrJson = rlr.convertToJson(testXlf, {});
+      const rlrJson = rlr.convertToJson(testXlf, {});
       assert.strictEqual(
         rlrJson["localize"]["something"][0],
         "palabrasenespanol"
       );
     });
     it("adds to existing translations", function () {
-      var rlrJson = rlr.convertToJson(testXlf, {
+      const rlrJson = rlr.convertToJson(testXlf, {
         localize: { something: ["firsttrans"] },
       });
       assert.strictEqual(rlrJson["localize"]["something"][0], "firsttrans");
@@ -98,7 +98,7 @@ describe("react-localize-redux to xlf tests", function () {
       );
     });
     it("adds to existing nestedtranslations", function () {
-      var rlrJson = rlr.convertToJson(testXlf, {
+      const rlrJson = rlr.convertToJson(testXlf, {
         nested: {
           localize: {
             something: ["firsttrans"],
@@ -117,7 +117,7 @@ describe("react-localize-redux to xlf tests", function () {
   });
 
   describe("error handling tests", function () {
-    let testJson = {
+    const testJson = {
       localize: {
         something: 5,
       },
