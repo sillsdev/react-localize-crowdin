@@ -1,6 +1,9 @@
 exports.convertToXliff = function (rlr, fileName, languages = ["en"]) {
-  const xliffData = [xliffTemplateSource(fileName, languages[0])];
-  flattenXliffTransUnits(rlr, "", xliffData[0]);
+  const xliffData = [];
+  for (let i = 0; i < languages.length; i++) {
+    xliffData.push(xliffTemplateSource(fileName, languages[i]));
+    flattenXliffTransUnits(rlr, "", xliffData[i], i);
+  }
   return xliffData;
 };
 
@@ -24,7 +27,7 @@ function xliffTemplateSource(fileName, sourceLang = "en", targetLang) {
 }
 
 // function to recursively map the json object into a flat list of xliff trans-units
-function flattenXliffTransUnits(rlrData, keyPrefix, xliffData) {
+function flattenXliffTransUnits(rlrData, keyPrefix, xliffData, transIndex) {
   Object.keys(rlrData).map(function (key) {
     if (Array.isArray(rlrData[key])) {
       let transUnit = {
@@ -32,6 +35,12 @@ function flattenXliffTransUnits(rlrData, keyPrefix, xliffData) {
         source: {
           _text: rlrData[key][0],
         },
+        target: transIndex
+          ? {
+              _attributes: { state: "translated" },
+              _text: rlrData[key][transIndex],
+            }
+          : undefined,
       };
       xliffData.xliff.file["trans-unit"].push(transUnit);
     } else if (typeof rlrData[key] === "object") {

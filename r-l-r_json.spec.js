@@ -1,14 +1,16 @@
 let rlr = require("./r-l-r_json");
 var assert = require("assert");
 
+const enPhrase = "from something";
+const esPhrase = "a algo";
 describe("react-localize-redux to xlf tests", function () {
   let testJson = {
     localize: {
-      something: ["tosomething"],
+      something: [enPhrase],
     },
     nested: {
       localize: {
-        something: ["tosomething"],
+        something: [enPhrase],
       },
     },
   };
@@ -19,26 +21,30 @@ describe("react-localize-redux to xlf tests", function () {
         version: "1.2",
       },
       file: {
-        _attributes: { original: "test.json", "source-language": "fr" },
+        _attributes: {
+          original: "test.json",
+          "source-language": "en",
+          "target-language": "es",
+        },
         "trans-unit": [
           {
             _attributes: {
               id: "localize.something",
             },
-            source: { _attributes: { "xml:lang": "en", _text: "tosomething" } },
+            source: { _text: enPhrase },
             target: {
-              _attributes: { "xml:lang": "es" },
-              _text: "palabrasenespanol",
+              _attributes: { state: "translated" },
+              _text: esPhrase,
             },
           },
           {
             _attributes: {
               id: "nested.localize.something",
             },
-            source: { _attributes: { "xml:lang": "en", _text: "tosomething" } },
+            source: { _text: enPhrase },
             target: {
-              _attributes: { "xml:lang": "es" },
-              _text: "palabrasenespanol",
+              _attributes: { state: "translated" },
+              _text: esPhrase,
             },
           },
         ],
@@ -67,7 +73,7 @@ describe("react-localize-redux to xlf tests", function () {
       );
       assert.strictEqual(
         xlifJson["xliff"]["file"]["trans-unit"][0].source._text,
-        "tosomething"
+        enPhrase
       );
     });
     it("should have xliff translation id with nested sub object", function () {
@@ -75,43 +81,37 @@ describe("react-localize-redux to xlf tests", function () {
         (item) => item["_attributes"].id === "nested.localize.something"
       );
       assert.notStrictEqual(foundNested, undefined);
-      assert.strictEqual(foundNested.source._text, "tosomething");
+      assert.strictEqual(foundNested.source._text, enPhrase);
     });
   });
 
   describe("xlf json to r-l-r tests", function () {
     it("builds r-l-r heirarchy from flat xliff ids", function () {
       var rlrJson = rlr.convertToJson(testXlf, {});
-      assert.strictEqual(
-        rlrJson["localize"]["something"][0],
-        "palabrasenespanol"
-      );
+      assert.strictEqual(rlrJson["localize"]["something"][0], esPhrase);
     });
     it("adds to existing translations", function () {
       var rlrJson = rlr.convertToJson(testXlf, {
         localize: { something: ["firsttrans"] },
       });
       assert.strictEqual(rlrJson["localize"]["something"][0], "firsttrans");
-      assert.strictEqual(
-        rlrJson["localize"]["something"][1],
-        "palabrasenespanol"
-      );
+      assert.strictEqual(rlrJson["localize"]["something"][1], esPhrase);
     });
     it("adds to existing nestedtranslations", function () {
       var rlrJson = rlr.convertToJson(testXlf, {
         nested: {
           localize: {
-            something: ["firsttrans"],
+            something: ["firstTrans"],
           },
         },
       });
       assert.strictEqual(
         rlrJson["nested"]["localize"]["something"][0],
-        "firsttrans"
+        "firstTrans"
       );
       assert.strictEqual(
         rlrJson["nested"]["localize"]["something"][1],
-        "palabrasenespanol"
+        esPhrase
       );
     });
   });
@@ -123,7 +123,7 @@ describe("react-localize-redux to xlf tests", function () {
       },
       nested: {
         localize: {
-          something: ["tosomething"],
+          something: [enPhrase],
         },
       },
     };
