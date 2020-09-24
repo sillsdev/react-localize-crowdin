@@ -92,9 +92,9 @@ describe("react-localize-redux to xlf tests", function () {
     });
     it("adds to existing translations", function () {
       var rlrJson = rlr.convertToJson(testXlf, {
-        localize: { something: ["firsttrans"] },
+        localize: { something: ["firstTrans"] },
       });
-      assert.strictEqual(rlrJson["localize"]["something"][0], "firsttrans");
+      assert.strictEqual(rlrJson["localize"]["something"][0], "firstTrans");
       assert.strictEqual(rlrJson["localize"]["something"][1], esPhrase);
     });
     it("adds to existing nestedtranslations", function () {
