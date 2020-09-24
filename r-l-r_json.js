@@ -35,13 +35,13 @@ function flattenXliffTransUnits(rlrData, keyPrefix, xliffData, transIndex) {
         source: {
           _text: rlrData[key][0],
         },
-        target: transIndex
-          ? {
-              _attributes: { state: "translated" },
-              _text: rlrData[key][transIndex],
-            }
-          : undefined,
       };
+      if (transIndex) {
+        transUnit.target = {
+          _attributes: { state: "translated" },
+          _text: rlrData[key][transIndex],
+        };
+      }
       xliffData.xliff.file["trans-unit"].push(transUnit);
     } else if (typeof rlrData[key] === "object") {
       flattenXliffTransUnits(
