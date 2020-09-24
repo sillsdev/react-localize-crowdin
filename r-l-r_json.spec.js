@@ -4,17 +4,17 @@ var assert = require("assert");
 const enPhrase = "from something";
 const esPhrase = "a algo";
 describe("react-localize-redux to xlf tests", function () {
-  let testJson = {
+  const testJson = {
     localize: {
-      something: [enPhrase],
+      something: [enPhrase, esPhrase],
     },
     nested: {
       localize: {
-        something: [enPhrase],
+        something: [enPhrase, esPhrase],
       },
     },
   };
-  let testXlf = {
+  const testXlf = {
     xliff: {
       _attributes: {
         xmlns: "urn:oasis:names:tc:xliff:document:1.2",
@@ -53,31 +53,31 @@ describe("react-localize-redux to xlf tests", function () {
   };
 
   describe("r-l-r_json.convertToXliff", function () {
-    var xlifJson = rlr.convertToXliff(testJson, "test.json")[0];
+    const xlfJson = rlr.convertToXliff(testJson, "test.json")[0];
     it("should have source filename and source language", function () {
       assert.strictEqual(
-        xlifJson["xliff"]["file"]["_attributes"]["original"],
+        xlfJson["xliff"]["file"]["_attributes"]["original"],
         "test.json"
       );
       assert.strictEqual(
-        xlifJson["xliff"]["file"]["_attributes"]["source-language"],
+        xlfJson["xliff"]["file"]["_attributes"]["source-language"],
         "en"
       );
     });
     it("should have xliff translation id with sub object", function () {
       assert.notStrictEqual(
-        xlifJson["xliff"]["file"]["trans-unit"].find(
+        xlfJson["xliff"]["file"]["trans-unit"].find(
           (item) => item["_attributes"].id === "localize.something"
         ),
         undefined
       );
       assert.strictEqual(
-        xlifJson["xliff"]["file"]["trans-unit"][0].source._text,
+        xlfJson["xliff"]["file"]["trans-unit"][0].source._text,
         enPhrase
       );
     });
     it("should have xliff translation id with nested sub object", function () {
-      let foundNested = xlifJson["xliff"]["file"]["trans-unit"].find(
+      const foundNested = xlfJson["xliff"]["file"]["trans-unit"].find(
         (item) => item["_attributes"].id === "nested.localize.something"
       );
       assert.notStrictEqual(foundNested, undefined);

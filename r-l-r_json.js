@@ -1,7 +1,7 @@
 exports.convertToXliff = function (rlr, fileName, languages = ["en"]) {
   const xliffData = [];
   for (let i = 0; i < languages.length; i++) {
-    xliffData.push(xliffTemplateSource(fileName, languages[i]));
+    xliffData.push(xliffTemplateSource(fileName, languages[0], languages[i]));
     flattenXliffTransUnits(rlr, "", xliffData[i], i);
   }
   return xliffData;
@@ -47,7 +47,8 @@ function flattenXliffTransUnits(rlrData, keyPrefix, xliffData, transIndex) {
       flattenXliffTransUnits(
         rlrData[key],
         keyPrefix + (keyPrefix === "" ? "" : ".") + key,
-        xliffData
+        xliffData,
+        transIndex
       );
     } else {
       throw new Error(

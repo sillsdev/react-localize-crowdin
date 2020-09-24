@@ -60,16 +60,20 @@ function rlrToXlf(rlrJsonFile, xlfFile, languages) {
   const data = JSON.parse(fs.readFileSync(rlrJsonFile));
   const xlfSuffix = ".xliff";
   const xlfFileRoot = getFileRoot(xlfFile, xlfSuffix);
-  const xliffData = rlr.convertToXliff(data, rlrJsonFile, languages);
+  const xlfData = rlr.convertToXliff(data, rlrJsonFile, languages);
   const options = { compact: true, ignoreComment: true, spaces: 4 };
-  const result = xmlJsConvert.json2xml(xliffData[0], options);
-  fs.writeFileSync(xlfFileRoot + xlfSuffix, result, (err) => {
-    // throws an error, you could also catch it here
-    if (err) throw err;
-
-    // success case, the file was saved
-    console.log("file saved!");
-  });
+  for (let i = 0; i < xlfData.length; i++) {
+    const result = xmlJsConvert.json2xml(xlfData[i], options);
+    const fileName = xlfFileRoot + (i ? "." + languages[i] : "") + xlfSuffix;
+    fs.writeFileSync(fileName, result, (err) => {
+      // throws an error, you could also catch it here
+      if (err) {
+        throw err;
+      }
+      // success case, the file was saved
+      console.log("file saved!");
+    });
+  }
 }
 
 // Remove suffix from end of a string
