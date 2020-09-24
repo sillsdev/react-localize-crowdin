@@ -16,27 +16,27 @@ exports.convertToXliff = function (rlr, fileName, languages = ["en"]) {
       },
     },
   ];
-  flattenXliffTransUnits(rlr, "", xliffData, languages);
+  flattenXliffTransUnits(rlr, "", xliffData[0], languages[0]);
   return xliffData;
 };
 
 // function to recursively map the json object into a flat list of xliff trans-units
-function flattenXliffTransUnits(rlrData, keyPrefix, xliffData, languages) {
+function flattenXliffTransUnits(rlrData, keyPrefix, xliffData, lang = "en") {
   Object.keys(rlrData).map(function (key) {
     if (Array.isArray(rlrData[key])) {
       let transUnit = {
         _attributes: { id: keyPrefix + "." + key },
         source: {
-          _attributes: { "xml:lang": languages[0] },
+          _attributes: { "xml:lang": lang },
           _text: rlrData[key][0],
         },
       };
-      xliffData[0].xliff.file["trans-unit"].push(transUnit);
+      xliffData.xliff.file["trans-unit"].push(transUnit);
     } else if (typeof rlrData[key] === "object") {
       flattenXliffTransUnits(
         rlrData[key],
         keyPrefix + (keyPrefix === "" ? "" : ".") + key,
-        xliffData[0]
+        xliffData
       );
     } else {
       throw new Error(

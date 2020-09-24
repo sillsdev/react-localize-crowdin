@@ -47,7 +47,7 @@ describe("react-localize-redux to xlf tests", function () {
   };
 
   describe("r-l-r_json.convertToXliff", function () {
-    var xlifJson = rlr.convertToXliff(testJson, "test.json");
+    var xlifJson = rlr.convertToXliff(testJson, "test.json")[0];
     it("should have source filename and source language", function () {
       assert.strictEqual(
         xlifJson["xliff"]["file"]["_attributes"]["original"],
