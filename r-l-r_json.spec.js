@@ -1,6 +1,7 @@
 let rlr = require("./r-l-r_json");
 var assert = require("assert");
 
+const langs = ["en", "es"];
 const enPhrase = "from something";
 const esPhrase = "a algo";
 describe("react-localize-redux to xlf tests", function () {
@@ -23,8 +24,8 @@ describe("react-localize-redux to xlf tests", function () {
       file: {
         _attributes: {
           original: "test.json",
-          "source-language": "en",
-          "target-language": "es",
+          "source-language": langs[0],
+          "target-language": langs[1],
         },
         "trans-unit": [
           {
@@ -52,36 +53,87 @@ describe("react-localize-redux to xlf tests", function () {
     },
   };
 
-  describe("r-l-r_json.convertToXliff", function () {
-    const xlfJson = rlr.convertToXliff(testJson, "test.json")[0];
-    it("should have source filename and source language", function () {
+  describe("r-l-r_json.convertToXliff default", function () {
+    const xlfSource = rlr.convertToXliff(testJson, "test.json")[0];
+    it("should have source filename, source language", function () {
       assert.strictEqual(
-        xlfJson["xliff"]["file"]["_attributes"]["original"],
+        xlfSource["xliff"]["file"]["_attributes"]["original"],
         "test.json"
       );
       assert.strictEqual(
-        xlfJson["xliff"]["file"]["_attributes"]["source-language"],
-        "en"
+        xlfSource["xliff"]["file"]["_attributes"]["source-language"],
+        langs[0]
       );
     });
     it("should have xliff translation id with sub object", function () {
       assert.notStrictEqual(
-        xlfJson["xliff"]["file"]["trans-unit"].find(
+        xlfSource["xliff"]["file"]["trans-unit"].find(
           (item) => item["_attributes"].id === "localize.something"
         ),
         undefined
       );
       assert.strictEqual(
-        xlfJson["xliff"]["file"]["trans-unit"][0].source._text,
+        xlfSource["xliff"]["file"]["trans-unit"][0].source._text,
         enPhrase
+      );
+      assert.strictEqual(
+        xlfSource["xliff"]["file"]["trans-unit"][0].target,
+        undefined
       );
     });
     it("should have xliff translation id with nested sub object", function () {
-      const foundNested = xlfJson["xliff"]["file"]["trans-unit"].find(
+      const foundNested = xlfSource["xliff"]["file"]["trans-unit"].find(
         (item) => item["_attributes"].id === "nested.localize.something"
       );
       assert.notStrictEqual(foundNested, undefined);
       assert.strictEqual(foundNested.source._text, enPhrase);
+      assert.strictEqual(foundNested.target, undefined);
+    });
+  });
+
+  describe("r-l-r_json.convertToXliff with translation", function () {
+    const xlfData = rlr.convertToXliff(testJson, "test.json", langs);
+    it("should create data for the right number of languages", function () {
+      assert.strictEqual(xlfData.length, langs.length);
+    });
+    const xlfTrans = xlfData[1];
+    it("should have source filename, source language, target language", function () {
+      assert.strictEqual(
+        xlfTrans["xliff"]["file"]["_attributes"]["original"],
+        "test.json"
+      );
+      assert.strictEqual(
+        xlfTrans["xliff"]["file"]["_attributes"]["source-language"],
+        langs[0]
+      );
+      assert.strictEqual(
+        xlfTrans["xliff"]["file"]["_attributes"]["target-language"],
+        langs[1]
+      );
+    });
+    it("should have xliff translation id with sub object", function () {
+      assert.notStrictEqual(
+        xlfTrans["xliff"]["file"]["trans-unit"].find(
+          (item) => item["_attributes"].id === "localize.something"
+        ),
+        undefined
+      );
+      assert.strictEqual(
+        xlfTrans["xliff"]["file"]["trans-unit"][0].source._text,
+        enPhrase
+      );
+      assert.strictEqual(
+        xlfTrans["xliff"]["file"]["trans-unit"][0].target._text,
+        esPhrase
+      );
+    });
+    it("should have xliff translation id with nested sub object", function () {
+      const foundNested = xlfTrans["xliff"]["file"]["trans-unit"].find(
+        (item) => item["_attributes"].id === "nested.localize.something"
+      );
+      assert.notStrictEqual(foundNested, undefined);
+      assert.strictEqual(foundNested.source._text, enPhrase);
+      assert.strictEqual(foundNested.target._text, esPhrase);
     });
   });
 
