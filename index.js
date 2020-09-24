@@ -29,13 +29,13 @@ switch (myArgs[0]) {
 function xlfToRlr(xlfFiles, rlrFile) {
   var options = { compact: true, ignoreComment: true, spaces: 4 };
   let rlrJson = {};
-  xlfFiles.map(xlf => {
+  xlfFiles.map((xlf) => {
     let fileJson = JSON.parse(
       xmlJsConvert.xml2json(fs.readFileSync(xlf), options)
     );
     rlr.convertToJson(fileJson, rlrJson);
   });
-  fs.writeFileSync(rlrFile, JSON.stringify(rlrJson), err => {
+  fs.writeFileSync(rlrFile, JSON.stringify(rlrJson), (err) => {
     // throws an error, you could also catch it here
     if (err) throw err;
 
@@ -48,8 +48,8 @@ function rlrToXlf(rlrJsonFile, xlfFile) {
   let data = JSON.parse(fs.readFileSync(rlrJsonFile));
   let xliffData = rlr.convertToXliff(data, rlrJsonFile);
   var options = { compact: true, ignoreComment: true, spaces: 4 };
-  var result = xmlJsConvert.json2xml(xliffData, options);
-  fs.writeFileSync(xlfFile, result, err => {
+  var result = xmlJsConvert.json2xml(xliffData[0], options);
+  fs.writeFileSync(xlfFile, result, (err) => {
     // throws an error, you could also catch it here
     if (err) throw err;
 
