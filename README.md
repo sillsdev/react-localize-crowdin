@@ -18,3 +18,17 @@
 [github-license]: https://github.com/sillsdev/react-localize-crowdin/blob/master/LICENSE
 
 A node module to support localizing react-localize-redux apps with Crowdin
+
+# Developer Guide
+
+Run linting on project:
+
+```bash
+$ npm run lint
+```
+
+Automatically format the repository using Prettier:
+
+```bash
+$ npm run prettier
+```

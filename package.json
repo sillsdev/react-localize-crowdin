@@ -25,11 +25,14 @@
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
-    "eslint": "^7.9.0"
+    "eslint": "^7.9.0",
+    "prettier": "^2.1.2"
   },
   "scripts": {
-    "test": "mocha **/*.spec.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "prettier": "prettier --write \"./**/*.{js,jsx,ts,tsx,json}\"",
+    "prettier-check": "prettier --check \"./**/*.{js,jsx,ts,tsx,json}\"",
+    "test": "mocha **/*.spec.js"
   },
   "bin": {
     "rlr-crowdin": "./index.js"
@@ -45,7 +48,6 @@
     "parserOptions": {
       "ecmaVersion": 2019
     },
-    "rules": {
-    }
+    "rules": {}
   }
 }
