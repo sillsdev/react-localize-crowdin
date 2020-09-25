@@ -2,33 +2,50 @@
   "name": "react-localize-crowdin",
   "version": "1.0.0",
   "description": "CLI tools to support localizing react apps with Crowdin",
-  "main": "index.js",
-  "dependencies": {
-    "js2xmlparser": "^4.0.0",
-    "mocha": "^6.2.0",
-    "xml-js": "^1.6.11"
-  },
-  "devDependencies": {},
-  "scripts": {
-    "test": "mocha **/*.spec.js"
-  },
-  "bin": {
-    "rlr-crowdin": "./index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jasonleenaylor/react-localize-crowdin.git"
-  },
+  "author": "Jason Naylor",
+  "license": "MIT",
   "keywords": [
     "react",
     "crowdin",
     "l10n",
     "i18n"
   ],
-  "author": "Jason Naylor",
-  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jasonleenaylor/react-localize-crowdin/issues"
+    "url": "https://github.com/sillsdev/react-localize-crowdin/issues"
   },
-  "homepage": "https://github.com/jasonleenaylor/react-localize-crowdin#readme"
+  "homepage": "https://github.com/sillsdev/react-localize-crowdin#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sillsdev/react-localize-crowdin.git"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "js2xmlparser": "^4.0.0",
+    "mocha": "^6.2.0",
+    "xml-js": "^1.6.11"
+  },
+  "devDependencies": {
+    "eslint": "^7.9.0"
+  },
+  "scripts": {
+    "test": "mocha **/*.spec.js",
+    "lint": "eslint ."
+  },
+  "bin": {
+    "rlr-crowdin": "./index.js"
+  },
+  "eslintConfig": {
+    "env": {
+      "node": true,
+      "commonjs": true,
+      "jasmine": true,
+      "es2020": true
+    },
+    "extends": "eslint:recommended",
+    "parserOptions": {
+      "ecmaVersion": 2020
+    },
+    "rules": {
+    }
+  }
 }

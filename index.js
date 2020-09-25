@@ -14,7 +14,7 @@ if (myArgs.length < 2) {
 }
 
 let fileName = myArgs[0];
-switch (myArgs[0]) {
+switch (fileName) {
   case "-rlr":
     rlrToXlf(myArgs[1], myArgs[2]);
     break;
