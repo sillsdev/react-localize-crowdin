@@ -39,11 +39,11 @@
       "node": true,
       "commonjs": true,
       "jasmine": true,
-      "es2020": true
+      "es6": true
     },
     "extends": "eslint:recommended",
     "parserOptions": {
-      "ecmaVersion": 2020
+      "ecmaVersion": 2019
     },
     "rules": {
     }
