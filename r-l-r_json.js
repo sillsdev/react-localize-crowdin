@@ -1,5 +1,16 @@
-exports.convertToXliff = function (rlr, fileName) {
-  let xliffData = {
+exports.convertToXliff = function (rlr, fileName, languages = ["en"]) {
+  const xliffData = [];
+  for (let i = 0; i < languages.length; i++) {
+    xliffData.push(
+      xliffTemplateSource(fileName, languages[0], i ? languages[i] : undefined)
+    );
+    flattenXliffTransUnits(rlr, "", xliffData[i], i);
+  }
+  return xliffData;
+};
+
+function xliffTemplateSource(fileName, sourceLang = "en", targetLang) {
+  return {
     xliff: {
       _attributes: {
         xmlns: "urn:oasis:names:tc:xliff:document:1.2",
@@ -8,33 +19,38 @@ exports.convertToXliff = function (rlr, fileName) {
       file: {
         _attributes: {
           original: fileName,
-          "source-language": "en",
+          "source-language": sourceLang,
+          "target-language": targetLang,
         },
         "trans-unit": [],
       },
     },
   };
-  flattenXliffTransUnits(rlr, "", xliffData);
-  return xliffData;
-};
+}
 
 // function to recursively map the json object into a flat list of xliff trans-units
-function flattenXliffTransUnits(rlrData, keyPrefix, xliffData) {
+function flattenXliffTransUnits(rlrData, keyPrefix, xliffData, transIndex) {
   Object.keys(rlrData).map(function (key) {
     if (Array.isArray(rlrData[key])) {
       let transUnit = {
         _attributes: { id: keyPrefix + "." + key },
         source: {
-          _attributes: { "xml:lang": "en" },
           _text: rlrData[key][0],
         },
       };
+      if (transIndex) {
+        transUnit.target = {
+          _attributes: { state: "translated" },
+          _text: rlrData[key][transIndex],
+        };
+      }
       xliffData.xliff.file["trans-unit"].push(transUnit);
     } else if (typeof rlrData[key] === "object") {
       flattenXliffTransUnits(
         rlrData[key],
         keyPrefix + (keyPrefix === "" ? "" : ".") + key,
-        xliffData
+        xliffData,
+        transIndex
       );
     } else {
       throw new Error(
