@@ -26,13 +26,15 @@
   },
   "devDependencies": {
     "eslint": "^7.9.0",
+    "nyc": "^15.1.0",
     "prettier": "^2.1.2"
   },
   "scripts": {
     "lint": "eslint .",
     "prettier": "prettier --write \"./**/*.{js,jsx,ts,tsx,json}\"",
     "prettier-check": "prettier --check \"./**/*.{js,jsx,ts,tsx,json}\"",
-    "test": "mocha **/*.spec.js"
+    "test": "mocha **/*.spec.js",
+    "test:coverage": "nyc --reporter=cobertura mocha **/*.spec.js"
   },
   "bin": {
     "rlr-crowdin": "./index.js"
