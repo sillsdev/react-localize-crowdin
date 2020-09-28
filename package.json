@@ -20,12 +20,12 @@
   },
   "main": "index.js",
   "dependencies": {
-    "js2xmlparser": "^4.0.0",
-    "mocha": "^6.2.0",
+    "js2xmlparser": "^4.0.1",
+    "mocha": "^6.2.3",
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
-    "eslint": "^7.9.0",
+    "eslint": "^7.10.0",
     "nyc": "^15.1.0",
     "prettier": "^2.1.2"
   },
