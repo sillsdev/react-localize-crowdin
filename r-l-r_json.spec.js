@@ -40,6 +40,31 @@ describe("react-localize-redux to xlf tests", function () {
           },
           {
             _attributes: {
+              id: "localize.untranslatedA",
+            },
+            source: { _text: enPhrase },
+          },
+          {
+            _attributes: {
+              id: "localize.untranslatedB",
+            },
+            source: { _text: enPhrase },
+            target: {
+              _attributes: { state: "needs-translation" },
+            },
+          },
+          {
+            _attributes: {
+              id: "localize.untranslatedC",
+            },
+            source: { _text: enPhrase },
+            target: {
+              _attributes: { state: "needs-translation" },
+              _text: "",
+            },
+          },
+          {
+            _attributes: {
               id: "nested.localize.something",
             },
             source: { _text: enPhrase },
@@ -141,6 +166,9 @@ describe("react-localize-redux to xlf tests", function () {
     it("builds r-l-r heirarchy from flat xliff ids", function () {
       var rlrJson = rlr.convertToJson(testXlf, {});
       assert.strictEqual(rlrJson["localize"]["something"][0], esPhrase);
+      assert.strictEqual(rlrJson["localize"]["untranslatedA"][0], enPhrase);
+      assert.strictEqual(rlrJson["localize"]["untranslatedB"][0], enPhrase);
+      assert.strictEqual(rlrJson["localize"]["untranslatedC"][0], enPhrase);
     });
     it("adds to existing translations", function () {
       var rlrJson = rlr.convertToJson(testXlf, {
