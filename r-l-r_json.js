@@ -86,13 +86,14 @@ function getTransUnitId(tu) {
 }
 
 function parseTransUnit(tu, section) {
-  const idParts = tu._attributes.id.split(".");
-  const finalPart = idParts[idParts.length - 1];
-  if (section[finalPart] === undefined) section[finalPart] = [];
+  const finalPart = getTransUnitId(tu).pop();
+  if (section[finalPart] === undefined) {
+    section[finalPart] = [];
+  }
   let translation = "";
-  if (tu.target !== undefined) {
+  if (tu.target && tu.target._text) {
     translation = tu.target._text;
-  } else if (tu.source !== undefined) {
+  } else if (tu.source && tu.source._text) {
     translation = tu.source._text;
   }
   section[finalPart].push(translation);
