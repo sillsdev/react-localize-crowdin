@@ -6,14 +6,8 @@ const enPhrase = "from something";
 const esPhrase = "a algo";
 describe("react-localize-redux to xlf tests", function () {
   const testJson = {
-    localize: {
-      something: [enPhrase, esPhrase],
-    },
-    nested: {
-      localize: {
-        something: [enPhrase, esPhrase],
-      },
-    },
+    localize: { something: [enPhrase, esPhrase] },
+    nested: { localize: { something: [enPhrase, esPhrase] } },
   };
   const testXlf = {
     xliff: {
@@ -29,9 +23,29 @@ describe("react-localize-redux to xlf tests", function () {
         },
         "trans-unit": [
           {
-            _attributes: {
-              id: "localize.something",
+            _attributes: { id: "localize.sourceless" },
+          },
+          {
+            _attributes: { id: "localize.untranslatedA" },
+            source: { _text: enPhrase },
+          },
+          {
+            _attributes: { id: "localize.untranslatedB" },
+            source: { _text: enPhrase },
+            target: {
+              _attributes: { state: "needs-translation" },
             },
+          },
+          {
+            _attributes: { id: "localize.untranslatedC" },
+            source: { _text: enPhrase },
+            target: {
+              _attributes: { state: "needs-translation" },
+              _text: "",
+            },
+          },
+          {
+            _attributes: { id: "localize.something" },
             source: { _text: enPhrase },
             target: {
               _attributes: { state: "translated" },
@@ -39,9 +53,7 @@ describe("react-localize-redux to xlf tests", function () {
             },
           },
           {
-            _attributes: {
-              id: "nested.localize.something",
-            },
+            _attributes: { id: "nested.localize.something" },
             source: { _text: enPhrase },
             target: {
               _attributes: { state: "translated" },
@@ -140,6 +152,10 @@ describe("react-localize-redux to xlf tests", function () {
   describe("xlf json to r-l-r tests", function () {
     it("builds r-l-r heirarchy from flat xliff ids", function () {
       var rlrJson = rlr.convertToJson(testXlf, {});
+      assert.strictEqual(rlrJson["localize"]["sourceless"][0], "");
+      assert.strictEqual(rlrJson["localize"]["untranslatedA"][0], enPhrase);
+      assert.strictEqual(rlrJson["localize"]["untranslatedB"][0], enPhrase);
+      assert.strictEqual(rlrJson["localize"]["untranslatedC"][0], enPhrase);
       assert.strictEqual(rlrJson["localize"]["something"][0], esPhrase);
     });
     it("adds to existing translations", function () {
