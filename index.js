@@ -72,7 +72,7 @@ function xlfToRlr(xlfFiles, rlrFile) {
 function rlrToXlf(rlrJsonFile, xlfFile, languages) {
   const data = JSON.parse(fs.readFileSync(rlrJsonFile));
   const xlfSuffix = ".xliff";
-  const xlfFileRoot = getFileRoot(xlfFile, xlfSuffix);
+  const xlfFileRoot = exports.getFileRoot(xlfFile, xlfSuffix);
   const xlfData = rlr.convertToXliff(data, rlrJsonFile, languages);
   const options = { compact: true, ignoreComment: true, spaces: 4 };
   for (let i = 0; i < xlfData.length; i++) {
