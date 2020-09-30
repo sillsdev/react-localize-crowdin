@@ -1,0 +1,14 @@
+# https://docs.npmjs.com/using-npm/developers.html#keeping-files-out-of-your-package
+
+# Data files
+*.xliff
+*.json
+
+# Git(hub) files
+.git*
+
+# Output of 'npm pack'
+*.tgz
+
+# Coverage directory used by tools like istanbul
+coverage
