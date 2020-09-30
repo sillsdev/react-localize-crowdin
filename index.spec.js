@@ -1,8 +1,13 @@
-var assert = require("assert");
+const assert = require("assert");
+const index = require("./index");
+
 describe("index", function () {
-  describe("#indexOf()", function () {
-    it("should return -1 when the value is not present", function () {
-      assert.equal([1, 2, 3].indexOf(4), -1);
+  describe("getFileRoot()", function () {
+    it("should return strings with specified suffix removed", function () {
+      const suffix = ".Aa";
+      assert.strictEqual(index.getFileRoot("", suffix), "");
+      assert.strictEqual(index.getFileRoot("File.aa", suffix), "File");
+      assert.strictEqual(index.getFileRoot("file.AA", suffix), "file");
     });
   });
 });
