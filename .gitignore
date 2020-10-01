@@ -1,9 +1,11 @@
 # Logs
 logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+*.log*
+
+# Data files
+*.xliff
+*.json
+!package*.json
 
 # Runtime data
 pids
