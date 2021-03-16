@@ -3,8 +3,8 @@ logs
 *.log*
 
 # Data files
-*.xliff
 *.json
+*.xlf
 !package*.json
 
 # Runtime data
