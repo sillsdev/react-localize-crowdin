@@ -6,17 +6,17 @@ const rlr = require("./r-l-r_json");
 
 function consoleUsage() {
   console.log("Command line utilities for working with Crowdin and react");
-  console.log("Usage: -rlr [json file] [xlif file] [source lang]");
+  console.log("Usage: -rlr [json file] [xlf file] [source lang]");
   console.log(
     "\tConverts json to xlf file for Crowdin with strings needing translation"
   );
   console.log(
-    "Usage: -rlr [json file] [xlif file] [source lang] [target lang] ... [target lang]"
+    "Usage: -rlr [json file] [xlf file] [source lang] [target lang] [...] [target lang]"
   );
   console.log(
     "\tConverts json to xlf files, with one per specified existing translation language"
   );
-  console.log("Usage: -x [xlf] [xlf]... -rlr [json file]");
+  console.log("Usage: -x [xlf file] [...] [xlf file] -rlr [json file]");
   console.log("\tConverts multiple xlf files from Crowdin into one json file");
 }
 
