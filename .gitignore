@@ -3,8 +3,10 @@ logs
 *.log*
 
 # Data files
+*.xlf
 *.xliff
 *.json
+*.zip
 !package*.json
 
 # Runtime data
@@ -64,3 +66,6 @@ typings/
 
 # WebStorm/Rider/IntelliJ
 .idea
+
+# MacOS
+.DS_Store
