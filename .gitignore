@@ -3,9 +3,9 @@ logs
 *.log*
 
 # Data files
+*.json
 *.xlf
 *.xliff
-*.json
 *.zip
 !package*.json
 
