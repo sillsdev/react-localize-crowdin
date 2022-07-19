@@ -63,7 +63,7 @@ function flattenXliffTransUnits(rlrData, keyPrefix, xliffData, transIndex) {
 }
 
 exports.convertToJson = function (xlfData) {
-  jsonData = {};
+  const jsonData = {};
   xlfData.xliff.file.body["trans-unit"].map((tu) =>
     addTranslationUnit(tu, jsonData)
   );
