@@ -6,6 +6,10 @@ const rlr = require("./r-l-r_json");
 
 function consoleUsage() {
   console.log("Command line utilities for working with Crowdin and react");
+  console.log("Usage: -x2j [xlf file] [json file]");
+  console.log(
+    "\tConverts xlf file from Crowdin to json file for use with i18next."
+  );
   console.log("Usage: -rlr [json file] [xlf file] [source lang]");
   console.log(
     "\tConverts json to xlf file for Crowdin with strings needing translation"
@@ -16,8 +20,6 @@ function consoleUsage() {
   console.log(
     "\tConverts json to xlf files, with one per specified existing translation language"
   );
-  console.log("Usage: -x [xlf file] [...] [xlf file] -rlr [json file]");
-  console.log("\tConverts multiple xlf files from Crowdin into one json file");
 }
 
 const myArgs = process.argv.slice(2);
@@ -25,6 +27,13 @@ if (myArgs.length < 3) {
   consoleUsage();
 } else {
   switch (myArgs[0]) {
+    case "-x2j":
+      if (myArgs.length > 3) {
+        console.log("Too many arguments.");
+      } else {
+        xlfToJson(myArgs[1], myArgs[2]);
+      }
+      break;
     case "-rlr":
       if (myArgs.length > 3) {
         rlrToXlf(myArgs[1], myArgs[2], myArgs.slice(3));
@@ -33,39 +42,24 @@ if (myArgs.length < 3) {
         rlrToXlf(myArgs[1], myArgs[2], ["en"]);
       }
       break;
-    case "-x":
-      switch (myArgs[myArgs.length - 2]) {
-        case "-rlr":
-          xlfToRlr(
-            myArgs.slice(1, myArgs.length - 2),
-            myArgs[myArgs.length - 1]
-          );
-          break;
-        default:
-          consoleUsage();
-      }
-      break;
     default:
       consoleUsage();
   }
 }
 
-function xlfToRlr(xlfFiles, rlrFile) {
+function xlfToJson(xlfFilename, jsonFilename) {
   const options = { compact: true, ignoreComment: true, spaces: 4 };
-  const rlrJson = {};
-  xlfFiles.map((xlf) => {
-    const fileJson = JSON.parse(
-      xmlJsConvert.xml2json(fs.readFileSync(xlf), options)
-    );
-    rlr.convertToJson(fileJson, rlrJson);
-  });
-  fs.writeFileSync(rlrFile, JSON.stringify(rlrJson), (err) => {
+  const xlfData = JSON.parse(
+    xmlJsConvert.xml2json(fs.readFileSync(xlfFilename), options)
+  );
+  const jsonData = rlr.convertToJson(xlfData);
+  fs.writeFileSync(jsonFilename, JSON.stringify(jsonData), (err) => {
     // Throws an error, you could also catch it here
     if (err) {
       throw err;
     }
     // Success case, the file was saved
-    console.log(`File saved: ${rlrFile}`);
+    console.log(`File saved: ${jsonFilename}`);
   });
 }
 

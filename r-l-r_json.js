@@ -62,14 +62,17 @@ function flattenXliffTransUnits(rlrData, keyPrefix, xliffData, transIndex) {
   });
 }
 
-exports.convertToJson = function (xlf, rlrJson) {
-  xlf.xliff.file["trans-unit"].map((tu) => addTranslationUnit(tu, rlrJson));
-  return rlrJson;
+exports.convertToJson = function (xlfData) {
+  jsonData = {};
+  xlfData.xliff.file.body["trans-unit"].map((tu) =>
+    addTranslationUnit(tu, jsonData)
+  );
+  return jsonData;
 };
 
-function addTranslationUnit(tu, rlrJson) {
+function addTranslationUnit(tu, jsonData) {
   const idParts = getTransUnitId(tu);
-  let section = rlrJson;
+  let section = jsonData;
   let sectionId = "";
   for (let i = 0; i < idParts.length - 1; i++) {
     sectionId = idParts[i];
@@ -82,19 +85,16 @@ function addTranslationUnit(tu, rlrJson) {
 }
 
 function getTransUnitId(tu) {
-  return tu._attributes.id.split(".");
+  return tu._attributes.resname.split(".");
 }
 
 function parseTransUnit(tu, section) {
   const finalPart = getTransUnitId(tu).pop();
-  if (section[finalPart] === undefined) {
-    section[finalPart] = [];
-  }
   let translation = "";
   if (tu.target && tu.target._text) {
     translation = tu.target._text;
   } else if (tu.source && tu.source._text) {
     translation = tu.source._text;
   }
-  section[finalPart].push(translation);
+  section[finalPart] = translation;
 }
