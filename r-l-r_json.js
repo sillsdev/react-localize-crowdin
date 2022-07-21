@@ -1,15 +1,13 @@
-exports.convertToXliff = function (rlr, fileName, languages = ["en"]) {
-  const xliffData = [];
-  for (let i = 0; i < languages.length; i++) {
-    xliffData.push(
-      xliffTemplateSource(fileName, languages[0], i ? languages[i] : undefined)
-    );
-    flattenXliffTransUnits(rlr, "", xliffData[i], i);
-  }
+exports.convertToXliff = function (jsonData) {
+  const xliffData = xliffTemplateSource();
+  flattenXliffTransUnits(jsonData, "", xliffData);
   return xliffData;
 };
 
-function xliffTemplateSource(fileName, sourceLang = "en", targetLang) {
+function xliffTemplateSource(
+  fileName = "translations.json",
+  sourceLang = "en"
+) {
   return {
     xliff: {
       _attributes: {
@@ -20,7 +18,6 @@ function xliffTemplateSource(fileName, sourceLang = "en", targetLang) {
         _attributes: {
           original: fileName,
           "source-language": sourceLang,
-          "target-language": targetLang,
         },
         "trans-unit": [],
       },
@@ -29,34 +26,25 @@ function xliffTemplateSource(fileName, sourceLang = "en", targetLang) {
 }
 
 // function to recursively map the json object into a flat list of xliff trans-units
-function flattenXliffTransUnits(rlrData, keyPrefix, xliffData, transIndex) {
+function flattenXliffTransUnits(rlrData, keyPrefix, xliffData) {
   Object.keys(rlrData).map(function (key) {
-    if (Array.isArray(rlrData[key])) {
+    if (typeof rlrData[key] === "string") {
       let transUnit = {
         _attributes: { id: keyPrefix + "." + key },
-        source: {
-          _text: rlrData[key][0],
-        },
+        source: { _text: rlrData[key] },
       };
-      if (transIndex) {
-        transUnit.target = {
-          _attributes: { state: "translated" },
-          _text: rlrData[key][transIndex],
-        };
-      }
       xliffData.xliff.file["trans-unit"].push(transUnit);
     } else if (typeof rlrData[key] === "object") {
       flattenXliffTransUnits(
         rlrData[key],
         keyPrefix + (keyPrefix === "" ? "" : ".") + key,
-        xliffData,
-        transIndex
+        xliffData
       );
     } else {
       throw new Error(
         "Unexpected data[ " +
           JSON.stringify(rlrData[key]) +
-          "] bad format in react-localize-redux json file?"
+          " ] bad format in react-localize-redux json file?"
       );
     }
   });

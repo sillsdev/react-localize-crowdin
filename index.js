@@ -10,15 +10,9 @@ function consoleUsage() {
   console.log(
     "\tConverts xlf file from Crowdin to json file for use with i18next."
   );
-  console.log("Usage: -rlr [json file] [xlf file] [source lang]");
+  console.log("Usage: -j2x [json file] [xlf file]");
   console.log(
-    "\tConverts json to xlf file for Crowdin with strings needing translation"
-  );
-  console.log(
-    "Usage: -rlr [json file] [xlf file] [source lang] [target lang] [...] [target lang]"
-  );
-  console.log(
-    "\tConverts json to xlf files, with one per specified existing translation language"
+    "\tConverts json file used with i18next to xlf for updating in Crowdin."
   );
 }
 
@@ -34,12 +28,11 @@ if (myArgs.length < 3) {
         xlfToJson(myArgs[1], myArgs[2]);
       }
       break;
-    case "-rlr":
+    case "-j2x":
       if (myArgs.length > 3) {
-        rlrToXlf(myArgs[1], myArgs[2], myArgs.slice(3));
+        console.log("Too many arguments.");
       } else {
-        console.log("Source language not specified; using default 'en'.");
-        rlrToXlf(myArgs[1], myArgs[2], ["en"]);
+        jsonToXlf(myArgs[1], myArgs[2]);
       }
       break;
     default:
@@ -63,24 +56,22 @@ function xlfToJson(xlfFilename, jsonFilename) {
   });
 }
 
-function rlrToXlf(rlrJsonFile, xlfFile, languages) {
-  const data = JSON.parse(fs.readFileSync(rlrJsonFile));
+function jsonToXlf(jsonFile, xlfFile, language = "en") {
+  const jsonData = JSON.parse(fs.readFileSync(jsonFile));
   const xlfSuffix = ".xlf";
   const xlfFileRoot = getFileRoot(xlfFile, xlfSuffix);
-  const xlfData = rlr.convertToXliff(data, rlrJsonFile, languages);
+  const xlfData = rlr.convertToXliff(jsonData);
   const options = { compact: true, ignoreComment: true, spaces: 4 };
-  for (let i = 0; i < xlfData.length; i++) {
-    const result = xmlJsConvert.json2xml(xlfData[i], options);
-    const fileName = xlfFileRoot + (i ? "." + languages[i] : "") + xlfSuffix;
-    fs.writeFileSync(fileName, result, (err) => {
-      // Throws an error, you could also catch it here
-      if (err) {
-        throw err;
-      }
-      // Success case, the file was saved
-      console.log(`File saved: ${fileName}`);
-    });
-  }
+  const result = xmlJsConvert.json2xml(xlfData, options);
+  const fileName = xlfFileRoot + "." + language + xlfSuffix;
+  fs.writeFileSync(fileName, result, (err) => {
+    // Throws an error, you could also catch it here
+    if (err) {
+      throw err;
+    }
+    // Success case, the file was saved
+    console.log(`File saved: ${fileName}`);
+  });
 }
 
 // Remove suffix from end of a string
