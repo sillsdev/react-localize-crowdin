@@ -5,7 +5,7 @@ exports.convertToXliff = function (jsonData) {
 };
 
 function xliffTemplateSource(
-  fileName = "translations.json",
+  filename = "translations.json",
   sourceLang = "en"
 ) {
   return {
@@ -16,7 +16,7 @@ function xliffTemplateSource(
       },
       file: {
         _attributes: {
-          original: fileName,
+          original: filename,
           "source-language": sourceLang,
         },
         "trans-unit": [],

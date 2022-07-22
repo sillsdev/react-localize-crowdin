@@ -99,7 +99,7 @@ describe("react-localize-redux to xlf tests", function () {
   });
 
   describe("xlf to json tests", function () {
-    it("builds json heirarchy from flat xliff", function () {
+    it("builds json hierarchy from flat xliff", function () {
       var jsonData = rlr.convertToJson(testXlf, {});
       assert.strictEqual(jsonData["localize"]["sourceless"], "");
       assert.strictEqual(jsonData["localize"]["untranslatedA"], enPhrase);
@@ -121,13 +121,13 @@ describe("react-localize-redux to xlf tests", function () {
     });
   });
 
-  describe("error handling tests", function () {
+  describe("error-handling tests", function () {
     let testJson = {
       localize: { something: 5 },
       nested: { localize: { something: enPhrase } },
     };
     it("receive error on bad data", function () {
-      assert.throws(() => rlr.convertToXliff(testJson, "test.json"), Error);
+      assert.throws(() => rlr.convertToXliff(testJson), Error);
     });
   });
 });
