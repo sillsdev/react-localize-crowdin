@@ -3,6 +3,8 @@
 # Data files
 *.json
 *.xlf
+*.xliff
+*.zip
 
 # Git(hub) files
 .git*

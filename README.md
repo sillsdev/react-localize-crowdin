@@ -24,14 +24,26 @@ A node module to support localizing react-localize-redux apps with Crowdin
 
 # Developer Guide
 
+Run to main project script:
+
+```bash
+node index.js
+```
+
 Run linting on project:
 
 ```bash
-$ npm run lint
+npm run lint
 ```
 
 Automatically format the repository using Prettier:
 
 ```bash
-$ npm run prettier
+npm run prettier
+```
+
+Run the `*.spec.js` unit tests:
+
+```bash
+npm test
 ```
