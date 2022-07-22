@@ -1,6 +1,6 @@
 {
   "name": "react-localize-crowdin",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "CLI tools to support localizing react apps with Crowdin",
   "author": "Jason Naylor",
   "license": "MIT",

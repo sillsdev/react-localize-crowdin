@@ -5,7 +5,7 @@ const xmlJsConvert = require("xml-js");
 const rlr = require("./r-l-r_json");
 
 function consoleUsage() {
-  console.log("Command line utilities for working with Crowdin and react");
+  console.log("Command line utilities for working with Crowdin and react:");
   console.log("Usage: -x2j [xlf file] [json file]");
   console.log(
     "\tConverts xlf file from Crowdin to json file for use with i18next."
@@ -56,35 +56,36 @@ function xlfToJson(xlfFilename, jsonFilename) {
   });
 }
 
-function jsonToXlf(jsonFile, xlfFile, language = "en") {
-  const jsonData = JSON.parse(fs.readFileSync(jsonFile));
+function jsonToXlf(jsonFilename, xlfFilename, language = "en") {
   const xlfSuffix = ".xlf";
-  const xlfFileRoot = getFileRoot(xlfFile, xlfSuffix);
+  const xlfFileRoot = getFileRoot(xlfFilename, xlfSuffix);
+  xlfFilename = xlfFileRoot + "." + language + xlfSuffix;
+
+  const jsonData = JSON.parse(fs.readFileSync(jsonFilename));
   const xlfData = rlr.convertToXliff(jsonData);
   const options = { compact: true, ignoreComment: true, spaces: 4 };
   const result = xmlJsConvert.json2xml(xlfData, options);
-  const fileName = xlfFileRoot + "." + language + xlfSuffix;
-  fs.writeFileSync(fileName, result, (err) => {
+  fs.writeFileSync(xlfFilename, result, (err) => {
     // Throws an error, you could also catch it here
     if (err) {
       throw err;
     }
     // Success case, the file was saved
-    console.log(`File saved: ${fileName}`);
+    console.log(`File saved: ${xlfFilename}`);
   });
 }
 
 // Remove suffix from end of a string
-function getFileRoot(fileName, fileSuffix) {
-  const fLen = fileName.length;
-  const sLen = fileSuffix.length;
+function getFileRoot(filename, suffix) {
+  const fLen = filename.length;
+  const sLen = suffix.length;
   if (
     fLen >= sLen &&
-    fileName.substring(fLen - sLen).toLowerCase() === fileSuffix.toLowerCase()
+    filename.substring(fLen - sLen).toLowerCase() === suffix.toLowerCase()
   ) {
-    return fileName.substring(0, fLen - sLen);
+    return filename.substring(0, fLen - sLen);
   }
-  return fileName;
+  return filename;
 }
 
 module.exports = { getFileRoot: getFileRoot };
