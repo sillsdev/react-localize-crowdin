@@ -52,7 +52,7 @@ function flattenXliffTransUnits(rlrData, keyPrefix, xliffData) {
 
 exports.convertToJson = function (xlfData) {
   const jsonData = {};
-  xlfData.xliff.file.body["trans-unit"].map((tu) =>
+  xlfData.xliff.file["trans-unit"].map((tu) =>
     addTranslationUnit(tu, jsonData)
   );
   return jsonData;
@@ -73,16 +73,19 @@ function addTranslationUnit(tu, jsonData) {
 }
 
 function getTransUnitId(tu) {
-  return tu._attributes.resname.split(".");
+  if (tu._attributes.resname) {
+    return tu._attributes.resname.split(".");
+  }
+  return tu._attributes.id.split(".");
 }
 
 function parseTransUnit(tu, section) {
-  const finalPart = getTransUnitId(tu).pop();
-  let translation = "";
-  if (tu.target && tu.target._text) {
-    translation = tu.target._text;
-  } else if (tu.source && tu.source._text) {
-    translation = tu.source._text;
+  if (
+    tu.target &&
+    tu.target._text &&
+    tu.target._attributes.state !== "needs-translation"
+  ) {
+    const finalPart = getTransUnitId(tu).pop();
+    section[finalPart] = tu.target._text;
   }
-  section[finalPart] = translation;
 }
