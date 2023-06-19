@@ -1,4 +1,4 @@
-exports.convertToXliff = function (jsonData) {
+exports.jsonToXliff = function (jsonData) {
   const xliffData = xliffTemplateSource();
   flattenXliffTransUnits(jsonData, "", xliffData);
   return xliffData;
@@ -48,41 +48,4 @@ function flattenXliffTransUnits(rlrData, keyPrefix, xliffData) {
       );
     }
   });
-}
-
-exports.convertToJson = function (xlfData) {
-  const jsonData = {};
-  xlfData.xliff.file.body["trans-unit"].map((tu) =>
-    addTranslationUnit(tu, jsonData)
-  );
-  return jsonData;
-};
-
-function addTranslationUnit(tu, jsonData) {
-  const idParts = getTransUnitId(tu);
-  let section = jsonData;
-  let sectionId = "";
-  for (let i = 0; i < idParts.length - 1; i++) {
-    sectionId = idParts[i];
-    if (section[sectionId] === undefined) {
-      section[sectionId] = {};
-    }
-    section = section[sectionId];
-  }
-  parseTransUnit(tu, section);
-}
-
-function getTransUnitId(tu) {
-  return tu._attributes.resname.split(".");
-}
-
-function parseTransUnit(tu, section) {
-  const finalPart = getTransUnitId(tu).pop();
-  let translation = "";
-  if (tu.target && tu.target._text) {
-    translation = tu.target._text;
-  } else if (tu.source && tu.source._text) {
-    translation = tu.source._text;
-  }
-  section[finalPart] = translation;
 }

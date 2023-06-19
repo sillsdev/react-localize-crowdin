@@ -2,7 +2,8 @@
 
 const fs = require("fs");
 const xmlJsConvert = require("xml-js");
-const rlr = require("./r-l-r_json");
+const j2x = require("./jsonToXliff");
+const x2j = require("./xliffToJson");
 
 function consoleUsage() {
   console.log("Command line utilities for working with Crowdin and react:");
@@ -12,28 +13,20 @@ function consoleUsage() {
   );
   console.log("Usage: -j2x [json file] [xlf file]");
   console.log(
-    "\tConverts json file used with i18next to xlf for updating in Crowdin."
+    "\tConverts json file used with i18next to xlf for updating the source file in Crowdin."
   );
 }
 
 const myArgs = process.argv.slice(2);
-if (myArgs.length < 3) {
+if (myArgs.length < 3 || myArgs.length > 3) {
   consoleUsage();
 } else {
   switch (myArgs[0]) {
     case "-x2j":
-      if (myArgs.length > 3) {
-        console.log("Too many arguments.");
-      } else {
-        xlfToJson(myArgs[1], myArgs[2]);
-      }
+      xlfToJson(myArgs[1], myArgs[2]);
       break;
     case "-j2x":
-      if (myArgs.length > 3) {
-        console.log("Too many arguments.");
-      } else {
-        jsonToXlf(myArgs[1], myArgs[2]);
-      }
+      jsonToXlf(myArgs[1], myArgs[2]);
       break;
     default:
       consoleUsage();
@@ -45,7 +38,7 @@ function xlfToJson(xlfFilename, jsonFilename) {
   const xlfData = JSON.parse(
     xmlJsConvert.xml2json(fs.readFileSync(xlfFilename), options)
   );
-  const jsonData = rlr.convertToJson(xlfData);
+  const jsonData = x2j.xliffToJson(xlfData);
   fs.writeFileSync(jsonFilename, JSON.stringify(jsonData), (err) => {
     // Throws an error, you could also catch it here
     if (err) {
@@ -56,13 +49,9 @@ function xlfToJson(xlfFilename, jsonFilename) {
   });
 }
 
-function jsonToXlf(jsonFilename, xlfFilename, language = "en") {
-  const xlfSuffix = ".xlf";
-  const xlfFileRoot = getFileRoot(xlfFilename, xlfSuffix);
-  xlfFilename = xlfFileRoot + "." + language + xlfSuffix;
-
+function jsonToXlf(jsonFilename, xlfFilename) {
   const jsonData = JSON.parse(fs.readFileSync(jsonFilename));
-  const xlfData = rlr.convertToXliff(jsonData);
+  const xlfData = j2x.jsonToXliff(jsonData);
   const options = { compact: true, ignoreComment: true, spaces: 4 };
   const result = xmlJsConvert.json2xml(xlfData, options);
   fs.writeFileSync(xlfFilename, result, (err) => {
