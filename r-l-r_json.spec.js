@@ -17,52 +17,46 @@ describe("react-localize-redux to xlf tests", function () {
         version: "1.2",
       },
       file: {
-        body: {
-          _attributes: {
-            original: defaultFilename,
-            "source-language": langs[0],
+        "trans-unit": [
+          {
+            _attributes: { resname: "localize.sourceless" },
           },
-          "trans-unit": [
-            {
-              _attributes: { resname: "localize.sourceless" },
+          {
+            _attributes: { resname: "localize.targetless" },
+            source: { _text: enPhrase },
+          },
+          {
+            _attributes: { resname: "localize.untranslatedA" },
+            source: { _text: enPhrase },
+            target: {
+              _attributes: { state: "needs-translation" },
             },
-            {
-              _attributes: { resname: "localize.untranslatedA" },
-              source: { _text: enPhrase },
+          },
+          {
+            _attributes: { resname: "localize.untranslatedB" },
+            source: { _text: enPhrase },
+            target: {
+              _attributes: { state: "needs-translation" },
+              _text: "",
             },
-            {
-              _attributes: { resname: "localize.untranslatedB" },
-              source: { _text: enPhrase },
-              target: {
-                _attributes: { state: "needs-translation" },
-              },
+          },
+          {
+            _attributes: { resname: "localize.something" },
+            source: { _text: enPhrase },
+            target: {
+              _attributes: { state: "translated" },
+              _text: esPhrase,
             },
-            {
-              _attributes: { resname: "localize.untranslatedC" },
-              source: { _text: enPhrase },
-              target: {
-                _attributes: { state: "needs-translation" },
-                _text: "",
-              },
+          },
+          {
+            _attributes: { resname: "nested.localize.something" },
+            source: { _text: enPhrase },
+            target: {
+              _attributes: { state: "translated" },
+              _text: esPhrase,
             },
-            {
-              _attributes: { resname: "localize.something" },
-              source: { _text: enPhrase },
-              target: {
-                _attributes: { state: "translated" },
-                _text: esPhrase,
-              },
-            },
-            {
-              _attributes: { resname: "nested.localize.something" },
-              source: { _text: enPhrase },
-              target: {
-                _attributes: { state: "translated" },
-                _text: esPhrase,
-              },
-            },
-          ],
-        },
+          },
+        ],
       },
     },
   };
@@ -101,10 +95,10 @@ describe("react-localize-redux to xlf tests", function () {
   describe("xlf to json tests", function () {
     it("builds json hierarchy from flat xliff", function () {
       var jsonData = rlr.convertToJson(testXlf, {});
-      assert.strictEqual(jsonData["localize"]["sourceless"], "");
-      assert.strictEqual(jsonData["localize"]["untranslatedA"], enPhrase);
-      assert.strictEqual(jsonData["localize"]["untranslatedB"], enPhrase);
-      assert.strictEqual(jsonData["localize"]["untranslatedC"], enPhrase);
+      assert.strictEqual(jsonData["localize"]["sourceless"], undefined);
+      assert.strictEqual(jsonData["localize"]["targetless"], undefined);
+      assert.strictEqual(jsonData["localize"]["untranslatedA"], undefined);
+      assert.strictEqual(jsonData["localize"]["untranslatedB"], undefined);
       assert.strictEqual(jsonData["localize"]["something"], esPhrase);
     });
     it("adds to existing translations", function () {
