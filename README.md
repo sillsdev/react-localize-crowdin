@@ -1,12 +1,15 @@
 # react-localize-crowdin
 
-[![Node Actions Status][github-actions-node-badge]][github-actions]
+[![Node Actions Status][github-actions-node-badge]][github-actions-node]
+[![CodeQL Actions Status][github-actions-codeql-badge]][github-actions-codeql]
 [![Coverage][codecov-badge]][codecov]
 [![GitHub contributors][github-contribs-badge]][github-contribs]
 [![GitHub][github-license-badge]][github-license]
 
 [github-actions-node-badge]: https://github.com/sillsdev/react-localize-crowdin/workflows/Node.js%20CI/badge.svg
-[github-actions]: https://github.com/sillsdev/react-localize-crowdin/actions
+[github-actions-node]: https://github.com/sillsdev/react-localize-crowdin/actions/workflows/node.js.yml
+[github-actions-codeql-badge]: https://github.com/sillsdev/react-localize-crowdin/workflows/CodeQL/badge.svg
+[github-actions-codeql]: https://github.com/sillsdev/react-localize-crowdin/actions/workflows/codeql.yml
 [codecov-badge]: https://codecov.io/gh/sillsdev/react-localize-crowdin/branch/master/graph/badge.svg
 [codecov]: https://codecov.io/gh/sillsdev/react-localize-crowdin
 [github-contribs-badge]: https://img.shields.io/github/contributors/sillsdev/react-localize-crowdin?cacheSeconds=10000
