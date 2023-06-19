@@ -20,7 +20,7 @@
 [github-license-badge]: https://img.shields.io/github/license/sillsdev/react-localize-crowdin
 [github-license]: https://github.com/sillsdev/react-localize-crowdin/blob/master/LICENSE
 
-A node module to support localizing react-localize-redux apps with Crowdin
+A node module to support localizing i18next apps with Crowdin
 
 # Developer Guide
 
