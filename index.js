@@ -2,7 +2,8 @@
 
 const fs = require("fs");
 const xmlJsConvert = require("xml-js");
-const rlr = require("./r-l-r_json");
+const j2x = require("./jsonToXliff");
+const x2j = require("./xliffToJson");
 
 function consoleUsage() {
   console.log("Command line utilities for working with Crowdin and react:");
@@ -37,7 +38,7 @@ function xlfToJson(xlfFilename, jsonFilename) {
   const xlfData = JSON.parse(
     xmlJsConvert.xml2json(fs.readFileSync(xlfFilename), options)
   );
-  const jsonData = rlr.convertToJson(xlfData);
+  const jsonData = x2j.xliffToJson(xlfData);
   fs.writeFileSync(jsonFilename, JSON.stringify(jsonData), (err) => {
     // Throws an error, you could also catch it here
     if (err) {
@@ -50,7 +51,7 @@ function xlfToJson(xlfFilename, jsonFilename) {
 
 function jsonToXlf(jsonFilename, xlfFilename) {
   const jsonData = JSON.parse(fs.readFileSync(jsonFilename));
-  const xlfData = rlr.convertToXliff(jsonData);
+  const xlfData = j2x.jsonToXliff(jsonData);
   const options = { compact: true, ignoreComment: true, spaces: 4 };
   const result = xmlJsConvert.json2xml(xlfData, options);
   fs.writeFileSync(xlfFilename, result, (err) => {
