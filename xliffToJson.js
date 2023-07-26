@@ -31,7 +31,8 @@ function parseTransUnit(tu, section) {
   if (
     tu.target &&
     tu.target._text &&
-    (!tu.target._attributes || tu.target._attributes.state !== "needs-translation")
+    (!tu.target._attributes ||
+      tu.target._attributes.state !== "needs-translation")
   ) {
     const finalPart = getTransUnitId(tu).pop();
     section[finalPart] = tu.target._text;
