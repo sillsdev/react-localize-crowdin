@@ -15,22 +15,28 @@ function consoleUsage() {
   console.log(
     "\tConverts json file used with i18next to xlf for updating the source file in Crowdin."
   );
+  console.log("Usage: -j2xt [source json file] [target json file] [xlf file]");
+  console.log(
+    "\tConverts source and target json files to a bilingual xlf for uploading translations to Crowdin."
+  );
 }
 
 const myArgs = process.argv.slice(2);
-if (myArgs.length < 3 || myArgs.length > 3) {
-  consoleUsage();
-} else {
-  switch (myArgs[0]) {
-    case "-x2j":
-      xlfToJson(myArgs[1], myArgs[2]);
-      break;
-    case "-j2x":
-      jsonToXlf(myArgs[1], myArgs[2]);
-      break;
-    default:
-      consoleUsage();
-  }
+switch (myArgs[0]) {
+  case "-x2j":
+    if (myArgs.length !== 3) { consoleUsage(); break; }
+    xlfToJson(myArgs[1], myArgs[2]);
+    break;
+  case "-j2x":
+    if (myArgs.length !== 3) { consoleUsage(); break; }
+    jsonToXlf(myArgs[1], myArgs[2]);
+    break;
+  case "-j2xt":
+    if (myArgs.length !== 4) { consoleUsage(); break; }
+    jsonToXlfBilingual(myArgs[1], myArgs[2], myArgs[3]);
+    break;
+  default:
+    consoleUsage();
 }
 
 function xlfToJson(xlfFilename, jsonFilename) {
@@ -46,6 +52,20 @@ function xlfToJson(xlfFilename, jsonFilename) {
     }
     // Success case, the file was saved
     console.log(`File saved: ${jsonFilename}`);
+  });
+}
+
+function jsonToXlfBilingual(sourceJsonFilename, targetJsonFilename, xlfFilename) {
+  const sourceData = JSON.parse(fs.readFileSync(sourceJsonFilename));
+  const targetData = JSON.parse(fs.readFileSync(targetJsonFilename));
+  const langMatch = targetJsonFilename.match(/\.([a-z]{2,3}(?:-[a-z]{2,4})?)\.json$/i);
+  const targetLang = langMatch ? langMatch[1] : "und";
+  const xlfData = j2x.jsonToXliffBilingual(sourceData, targetData, targetLang);
+  const options = { compact: true, ignoreComment: true, spaces: 2 };
+  const result = xmlJsConvert.json2xml(xlfData, options);
+  fs.writeFileSync(xlfFilename, result, (err) => {
+    if (err) throw err;
+    console.log(`File saved: ${xlfFilename}`);
   });
 }
 

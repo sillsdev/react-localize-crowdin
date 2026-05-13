@@ -44,3 +44,35 @@ Run the `*.spec.js` unit tests:
 ```bash
 npm test
 ```
+
+## Use `node index.js` for The Combine
+
+This section assumes the `react-localize-crowdin` and `TheCombine` repos share a common parent directory.
+
+### XLIFF to JSON (`-x2j`)
+
+Convert a Crowdin XLIFF translation file to a JSON translation file for use with i18next:
+
+```bash
+node index -x2j translations.pt-BR.xlf translation.pt.json
+cp translation.pt.json ../TheCombine/public/locales/pt/translation.json
+```
+
+### JSON to XLIFF source (`-j2x`)
+
+Convert a JSON translation source file to an XLIFF source file for uploading to Crowdin:
+
+```bash
+cp ../TheCombine/public/locales/en/translation.json translation.en.json
+node index -j2x translation.en.json translations.en.xlf
+```
+
+### JSON to XLIFF translations (`-j2xt`)
+
+Create a bilingual XLIFF from source and pre-translated JSON files (e.g., `translation.id.json`) for uploading translations to Crowdin. The target language code is inferred from the target JSON filename.
+
+```bash
+node index -j2xt translation.en.json translation.id.json translations.id.xlf
+```
+
+To upload the resulting bilingual XLIFF to Crowdin, navigate to the "Translations" tab in the Crowdin project and, under "Upload existing translation", drop or select the `.xlf` file. In the "Source file" dropdown, type "transl" and select "/translations.en.xlf". The target language should be automatically selected. Then click the Import button.
